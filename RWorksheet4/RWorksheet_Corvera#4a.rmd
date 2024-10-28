@@ -14,6 +14,7 @@ Gender <- c("F", "F", "F", "F", "M", "F", "F", "F", "M", "F", "M", "F", "M", "M"
 HouseholdData <- data.frame(Shoesize, Height, Gender)
 HouseholdData
 
+#for Rworksheet 4b
 write.csv(HouseholdData, "HouseholdData", row.names = FALSE)
 ```
 ```{r}

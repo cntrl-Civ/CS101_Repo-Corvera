@@ -30,11 +30,8 @@ for (i in 1:n_rows) {
 ```
 
 ```{r}
-if(interactive()){
-input <- as.integer(readline(prompt="Input a number of terms: "))
-}else {
-  input <- 12
-}
+input <- is.na(as.integer(readline(prompt="Input a number of terms: ")))
+
 
 
 a <- 0
