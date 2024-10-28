@@ -1,0 +1,237 @@
+---
+title: "RWorksheet_Corvera#4b"
+output: pdf_document
+date: "2024-10-28"
+---
+
+```{r}
+vectorA <- c(1,2,3,4,5)
+
+matrixB <- matrix(0, nrow = 5, ncol = 5)
+
+for(i in 1:nrow(matrixB)){
+  for(j in 1:ncol(matrixB)){
+    matrixB[i,j] <- abs(i - j)
+  }
+}
+matrixB
+```
+
+```{r}
+n_rows <- 5
+
+for (i in 1:n_rows) {
+  n_stars <- i 
+
+  stars <- paste(rep("*", n_stars), collapse = "")
+
+  cat(stars, "\n")
+}
+```
+
+```{r}
+if(interactive()){
+input <- as.integer(readline(prompt="Input a number of terms: "))
+}else {
+  input <- 12
+}
+
+
+a <- 0
+b <- 1
+
+cat(a, " ")
+
+i <- 1
+repeat {
+  c <- a + b
+
+  cat(c, " ")
+
+  a <- b
+  b <- c
+
+  i <- i + 1
+
+  if (i > input) {
+    break
+  }
+}
+```
+
+```{r}
+
+HouseholdData <- read.csv("C:/Users/victo/OneDrive/Desktop/R/RWorksheet4/HouseholdData.csv")
+HouseholdData
+```
+
+```{r}
+head(HouseholdData)
+```
+
+```{r}
+SSMale <- subset(HouseholdData, Gender=="M")
+SSMale
+SSFemale <- subset(HouseholdData, Gender=="F")
+SSFemale
+```
+
+```{r}
+household_data <- data.frame(
+  Category = c("Male", "Female"),
+  Count = c(15, 20)
+)
+
+barplot(household_data$Count, names.arg = household_data$Category,
+        col = c("blue", "pink"),
+        main = "Household Data",
+        ylab = "Number of People",
+        xlab = "Gender",
+        legend.text = c("Male", "Female"),
+        args.legend = list(x = "topright")
+)
+```
+
+```{r}
+expenses <- c(60, 10, 5, 25)
+
+expense_categories <- c("Food", "Electricity", "Savings", "Miscellaneous")
+
+df <- data.frame(expense_categories, expenses)
+
+df$percentage <- (df$expenses / sum(df$expenses)) * 100
+
+pie(df$expenses, labels = paste(df$expense_categories, "(", round(df$percentage, 2), "%)"), main = "Dela Cruz Family Monthly Expenses", col = rainbow(length(df$expense_categories)))
+
+legend("topright", legend = df$expense_categories, fill = rainbow(length(df$expense_categories)))
+```
+
+```{r}
+data(iris)
+iris
+```
+
+```{r}
+str(iris)
+```
+
+```{r}
+mean <- c(mean(iris$Sepal.Length), mean(iris$Sepal.Width), mean(iris$Petal.Length), mean(iris$Petal.Width))
+
+mean
+```
+
+```{r}
+species_freq <- table(iris$Species)
+
+pie(species_freq, 
+    main = "Species Distribution", 
+    labels = names(species_freq), 
+    col = rainbow(length(species_freq)),
+    border = "white",
+    radius = 1,
+    clockwise = TRUE)
+
+# Add legend
+legend("topright", 
+       legend = names(species_freq), 
+       fill = rainbow(length(species_freq)))
+```
+
+```{r}
+data(iris)
+
+setosa <- iris[iris$Species == "setosa", ]
+versicolor <- iris[iris$Species == "versicolor", ]
+virginica <- iris[iris$Species == "virginica", ]
+
+tail(setosa)
+tail(versicolor)
+tail(virginica)
+```
+
+```{r}
+data(iris)
+
+iris$Species <- factor(iris$Species)
+
+plot(iris$Sepal.Length, iris$Sepal.Width,
+     main = "Iris Dataset",
+     sub = "Sepal width and length",
+     xlab = "Sepal Length",
+     ylab = "Sepal Width",
+     pch = as.numeric(iris$Species),
+     col = as.numeric(iris$Species),
+     cex = 1.2
+)
+
+legend("topright",
+       legend = levels(iris$Species),
+       pch = 1:3,
+       col = 1:3
+)
+```
+
+```{r}
+library(readxl)
+alexa <- read_excel("C:/Users/victo/OneDrive/Desktop/R/RWorksheet4/alexa_file.xlsx")
+alexa
+```
+
+```{r}
+alexa$variation <- gsub("Old Name", "New Name", alexa$variation)
+alexa$variation
+```
+
+```{r}
+knitr::include_graphics("C:/Users/victo/OneDrive/Desktop/R/RWorksheet4/Screenshot.jpg")
+```
+
+```{r}
+library(dplyr)
+
+
+variationsC <- alexa %>%
+  count(variation, name = "Total")
+
+
+save(variationsC, file = "variations.RData")
+
+
+print(variationsC)
+```
+
+```{r}
+library(ggplot2)
+
+load("variations.RData")
+
+
+ggplot(variationsC, aes(x = variation, y = Total, fill = variation)) +
+  geom_bar(stat = "identity") +
+  ggtitle("Total Count of Alexa Variations") +
+  xlab("Variation") +
+  ylab("Total Numbers") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
+```
+
+```{r}
+variationsC$Category <- ifelse(grepl("Black", variationsC$variation), "Black Variants", 
+                                    ifelse(grepl("White", variationsC$variation), "White Variants", NA))
+
+BWvariants <- variationsC %>% filter(!is.na(Category))
+
+
+ggplot(BWvariants, aes(x = variation, y = Total, fill = variation)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Category, scales = "free_x") +  
+  ggtitle("Counts of Alexa Black and White Variants") +
+  xlab("Variation") +
+  ylab("Total Numbers") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set2")  
+```
+

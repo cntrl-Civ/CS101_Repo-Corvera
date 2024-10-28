@@ -13,6 +13,8 @@ Gender <- c("F", "F", "F", "F", "M", "F", "F", "F", "M", "F", "M", "F", "M", "M"
 ```{r}
 HouseholdData <- data.frame(Shoesize, Height, Gender)
 HouseholdData
+
+write.csv(HouseholdData, "HouseholdData", row.names = FALSE)
 ```
 ```{r}
 SSMale <- subset(HouseholdData, Gender=="M")
@@ -63,5 +65,123 @@ print(new_order_data)
 ```{r}
 ExcelData <- read.table("import_march.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
 ExcelData
+```
+
+```{r}
+x <- is.na(as.numeric(readline(prompt = "Select a number from 1 to 50: ")))
+
+if(x >= 50 || x <= 1){
+  cat("The number selected is beyond the range of the of 1 to 50")
+}else{
+  if(x == 20 ){
+    cat("TRUE\n")
+  }else{
+    x
+  }
+}
+```
+
+#7.
+```{r}
+#wont knit if snackP is interactive T-T
+if (interactive()){
+snackP <- is.na(as.numeric(readline(prompt= "Input snack price:")))
+}else{
+  snackP <- 1850
+}
+
+
+if(snackP %% 50 != 0){
+  cat("The price must be divisible by 50.\n")
+  stop()
+}
+
+count <- 0
+
+while(snackP > 0){
+  if(snackP >= 1000){
+  count <- count + (snackP %/% 1000)
+  snackP <- snackP %% 1000
+}else if(snackP >= 500){
+  count <- count + (snackP %/% 500)
+  snackP <- snackP %% 500
+}else if(snackP >= 200){
+  count <- count + (snackP %/% 200)
+  snackP <- snackP %% 200
+}else if(snackP >= 100){
+  count <- count + (snackP %/% 100)
+  snackP <- snackP %% 100
+}else if(snackP >= 50){
+  count <- count + (snackP %/% 50)
+  snackP <- snackP %% 50
+ }
+}
+cat("Minimum number of bills needed:", count, "\n")
+```
+
+#8.
+#a.
+```{r}
+Grade_df <- data.frame(Name = c("Annie", "Thea", "Steve", "Hanna"),
+                       Grade1 = c(85,65,75,95),
+                       Grade2 = c(65,75,55,75),
+                       Grade3 = c(85,90,80,100),
+                       Grade4 = c(100,90,85,90))
+Grade_df
+```
+
+#b.
+```{r}
+Average <- numeric(nrow(Grade_df))
+
+for (i in 1:nrow(Grade_df)){
+  TotalG <- Grade_df$Grade1[i] + Grade_df$Grade2[i] + Grade_df$Grade3[i] + Grade_df$Grade4[i]
+  Average[i] <- TotalG / 4
+}
+
+Grade_df$Average <- Average
+
+studentN <- readline(prompt = "Enter Student Name: ")
+
+if (studentN %in% Grade_df$Name){
+  SIndex <- which(Grade_df$Name == studentN)
+cat(paste(studentN, "'s average this semester is", round(Grade_df$Average[SIndex], 2), ".\n"))
+}else{
+  cat("Student's name is not on the records")
+}
+```
+#c.
+```{r}
+testNum <- ncol(Grade_df) - 1
+
+for (GIndex in 1:testNum) {
+  Total <- sum(Grade_df[,GIndex + 1])
+  AverageG <- Total / 4
+  if(AverageG < 80 ){
+    cat(paste("The", GIndex, "test was difficult.\n"))
+  }
+}
+```
+#d.
+```{r}
+studentN <- readline(prompt = "Enter Student Name: ")
+
+if(studentN %in% Grade_df$Name){
+  studentR <- Grade_df[Grade_df$Name == studentN, ]
+  studentG <- c(studentR$Grade1, studentR$Grade2,
+                studentR$Grade3, studentR$Grade4)
+  
+  HighestG <- 0 
+  
+  for (grade in studentG){
+    if(grade > HighestG){
+      HighestG <- grade
+    }
+  }
+  cat(studentN, "'s highest grade is:", HighestG, "\n")
+}else{
+  cat("Student", studentN, "was not in records")
+}
+
 ```
 
