@@ -1,0 +1,185 @@
+---
+title: "RWorkSheet_TIAD#4c"
+date: "2024-11-07"
+output: pdf_document
+---
+
+```{r}
+#1.
+#a.
+mpgfile <- read.csv("C://Users//victo//OneDrive//Desktop//R//RWorksheet4//mpg.csv")
+mpgfile
+```
+
+#b.
+  #The Cathegorical variables would be year, transmission, drv, class, fl
+#c.
+  #The Continuous variables would be displ
+
+
+```{r}
+#2.
+MM_model <- names(which.max(table(mpgfile$manufacturer)))
+MM_model
+
+mostmodel_var <- names(which.max(table(mpgfile$model)))
+mostmodel_var
+
+#a.
+library(ggplot2)
+library(dplyr)
+MMC <- mpgfile %>%
+  group_by(manufacturer) %>%
+  summarise(U_models = n_distinct(model)) %>%
+  arrange(desc(U_models))
+
+MMC
+
+#b.
+ggplot(MMC, aes(x = reorder(manufacturer, -U_models), y = U_models)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(title = "Unique Models by Manufacturer", x = "Manufacturer", y = "Count") + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+#2
+
+#a
+ggplot(mpg, aes(model, manufacturer)) + geom_point()
+#It creates a scatter plot where each point represents a specific model-manufacturer combination.
+
+#b
+#It is useful but the x-axis have too many categories, making the plot cluttered and unreadable.
+```
+
+```{r}
+#3
+library(ggplot2)
+library(dplyr)
+
+top_20 <- mpgfile %>% head(20)
+
+ggplot(top_20, aes(x = model, y = year)) +
+  geom_point() +
+  labs(title = "Top 20 Car Models by Year") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#4
+MC <- mpgfile %>%
+  group_by(model) %>%
+  summarise(CC = n())
+
+MC
+
+#a
+top_20 <- MC %>% top_n(20, CC)
+
+ggplot(top_20, aes(x = reorder(model, CC), y = CC, fill = model)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 20 Car Models by Count (Flipped)",
+       x = "Car Model",
+       y = "Count") 
+
+#b
+ggplot(top_20, aes(x = reorder(model, CC), y = CC, fill = model)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 20 Car Models by Count",
+       x = "Car Model",
+       y = "Count") + coord_flip() 
+```
+
+```{r}
+#5
+
+#a
+#I observed that points with higher cylinder counts (cyl) align with higher values of engine displacement (displ).
+
+ggplot(mpgfile, aes(x = cyl, y = displ, color = displ)) +
+  geom_point() +
+  labs(title = "Relationship between No. of Cylinders and Engine Displacement",
+       x = "Number of Cylinders",
+       y = "Engine Displacement (L)")
+```
+
+```{r}
+#6
+ggplot(mpgfile, aes(x = displ, y = hwy, color = cyl)) +
+  geom_point() +
+  labs(title = "Relationship between Engine Displacement and Highway MPG",
+       x = "Engine Displacement (L)",
+       y = "Highway MPG")
+```
+
+```{r}
+#6.
+traffic_D <- read.csv("C://Users//victo//OneDrive//Desktop//R//RWorksheet4//traffic.csv")
+traffic_D
+
+#a.
+str(traffic_D)
+#This dataset has 4 variables which is DataTime, Junction, Vehicles, and ID.
+
+#b.
+junction <- subset(traffic_D, select = Junction)
+head(junction)
+tail(junction)
+
+#c.
+library(ggplot2)
+ggplot(traffic_D, aes(x = DateTime, y = Vehicles, color = Junction)) +
+  geom_line() +
+  labs(title = "Traffic Counts by Junction", x = "Date & Time", y = "Vehicles")
+
+```
+
+```{r}
+#7.
+library("readxl")
+alexa_D <- read_xlsx("C://Users//victo//OneDrive//Desktop//R//RWorksheet4//alexa_file.xlsx")
+
+#a.
+str(alexa_D)
+ncol(alexa_D)
+#alexa file has 3,150 observations and 5 columns
+
+#b.
+library(dplyr)
+variation <- alexa_D %>%
+  group_by(variation) %>%
+  summarize(total = n())
+print(variation)
+
+#c.
+ggplot(variation, aes(x = variation, y = total, fill = variation)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total Variations", x = "Variation", y = "Total") +
+  theme_minimal()
+
+#d.
+library(dplyr)
+verified_reviews <- alexa_D %>%
+  group_by(date) %>%
+  summarize(count = n()) %>%
+  arrange(date)
+
+library(ggplot2)
+ggplot(verified_reviews, aes(x = date, y = count)) +
+  geom_line(color = "blue") +
+  labs(title = "Verified Reviews Over Time", x = "Date", y = "Verified Reviews") +
+  theme_minimal()
+
+#e.
+variation_R <- alexa_D %>%
+  group_by(variation) %>%
+  summarize(avg_rating = mean(rating, na.rm = TRUE)) %>%
+  arrange(desc(avg_rating))
+variation_R
+
+ggplot(variation_R, aes(x = reorder(variation, avg_rating), y = avg_rating, fill = variation)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Ratings by Variation", x = "Variation", y = "Average Rating") +
+  coord_flip()
+```
